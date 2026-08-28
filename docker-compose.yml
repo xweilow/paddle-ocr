@@ -1,0 +1,22 @@
+services:
+  paddleocr:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: paddleocr-service
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Number of CPU threads for PaddleOCR inference (default: all cores)
+      - OCR_CPU_THREADS=4
+      # Number of concurrent OCR requests (default: half of OCR_CPU_THREADS)
+      - OCR_MAX_WORKERS=2
+    volumes:
+      # Persist downloaded models between container rebuilds
+      - paddle_models:/root/.paddleocr
+
+volumes:
+  paddle_models:
